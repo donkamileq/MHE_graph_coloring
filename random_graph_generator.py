@@ -1,4 +1,5 @@
 # Skrypt do tworzenia randomowego grafu
+import argparse
 import collections
 import random
 
@@ -86,7 +87,10 @@ class Vertex:
 
 
 if __name__ == "__main__":
-    graph = RandomGraph(50)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-vn", "--vertex_number", default=15, help="Vertex number in graph")
+    args = parser.parse_args()
+    graph = RandomGraph(int(args.vertex_number))
     graph.send_parameters_to_file()
 
 
