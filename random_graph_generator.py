@@ -14,7 +14,7 @@ class RandomGraph:
         self.numbers_of_edges = self.get_number_of_edges(numbers_of_vertex)
         self.vertices = []
         for num in range(self.numbers_of_vertex):
-            self.vertices.append(Vertex(num+1))
+            self.vertices.append(Vertex(num))
 
     @staticmethod
     def get_number_of_edges(numbers_of_vertex):
@@ -75,6 +75,10 @@ class RandomGraph:
             graph_data = f"{graph_data}\n{raw_graph_data}".strip()
         with open('graph.txt', 'w') as file_with_edges:
             file_with_edges.write(graph_data)
+
+        graph_data = graph_data.replace(" -- ", ',').replace("\n", ',')
+        with open('graph_cpp_data.txt', 'w') as file_with_edges_for_cpp:
+            file_with_edges_for_cpp.write(graph_data)
 
 
 class Vertex:
