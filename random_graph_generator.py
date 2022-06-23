@@ -44,13 +44,10 @@ class RandomGraph:
             if len(values) < 3:
                 vertex_to_join = random.choice(list(vertex_with_edges))
                 while vertex_to_join == chosen_main_vertex:
-
-
-
                     vertex_to_join = random.choice(list(vertex_with_edges))
                 if vertex_to_join not in vertex_with_edges[chosen_main_vertex] \
                         and chosen_main_vertex not in vertex_with_edges[vertex_to_join]:
-                    if vertex_to_join.number_of_edges < 3 and chosen_main_vertex.number_of_edges < 3:
+                    if len(vertex_with_edges[vertex_to_join]) < 3 and len(vertex_with_edges[chosen_main_vertex]) < 3:
                         vertex_with_edges[chosen_main_vertex].append(vertex_to_join)
                         chosen_main_vertex.connected_verticies.append(vertex_to_join)
                         # TODO:  if we want to get all verticies in in connected_verticies
@@ -58,6 +55,8 @@ class RandomGraph:
                         vertex_to_join.number_of_edges = vertex_to_join.number_of_edges + 1
                         chosen_main_vertex.number_of_edges = chosen_main_vertex.number_of_edges + 1
                         self.numbers_of_edges = self.numbers_of_edges - 1
+            else:
+                vertex_with_edges.pop(chosen_main_vertex)
         return vertex_with_edges
 
     def prepare_graph_parameters(self):

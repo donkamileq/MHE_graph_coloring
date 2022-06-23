@@ -12,4 +12,4 @@ from random_graph_generator import RandomGraph
 #         print(f"{y} | {y.vertex_color}")
 #     print("\n------")
 
-hill_climbing_random(number_of_iteration=1, num_of_verticies=5)
+hill_climbing_random(number_of_iteration=10, num_of_verticies=30)
