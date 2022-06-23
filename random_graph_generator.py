@@ -37,17 +37,24 @@ class RandomGraph:
         vertex_with_edges = collections.defaultdict(list)
         for vertex in self.vertices:
             vertex_with_edges.setdefault(vertex, [])
+        self.vertices = vertex_with_edges.copy()
         while self.numbers_of_edges > 0:
             chosen_main_vertex = random.choice(list(vertex_with_edges))
             values = vertex_with_edges[chosen_main_vertex]
             if len(values) < 3:
                 vertex_to_join = random.choice(list(vertex_with_edges))
-                while vertex_to_join is chosen_main_vertex:
+                while vertex_to_join == chosen_main_vertex:
+
+
+
                     vertex_to_join = random.choice(list(vertex_with_edges))
                 if vertex_to_join not in vertex_with_edges[chosen_main_vertex] \
                         and chosen_main_vertex not in vertex_with_edges[vertex_to_join]:
                     if vertex_to_join.number_of_edges < 3 and chosen_main_vertex.number_of_edges < 3:
                         vertex_with_edges[chosen_main_vertex].append(vertex_to_join)
+                        chosen_main_vertex.connected_verticies.append(vertex_to_join)
+                        # TODO:  if we want to get all verticies in in connected_verticies
+                        # vertex_to_join.connected_verticies.append(chosen_main_vertex)
                         vertex_to_join.number_of_edges = vertex_to_join.number_of_edges + 1
                         chosen_main_vertex.number_of_edges = chosen_main_vertex.number_of_edges + 1
                         self.numbers_of_edges = self.numbers_of_edges - 1
@@ -76,15 +83,20 @@ class RandomGraph:
         with open('graph.txt', 'w') as file_with_edges:
             file_with_edges.write(graph_data)
 
-        graph_data = graph_data.replace(" -- ", ',').replace("\n", ',')
-        with open('graph_cpp_data.txt', 'w') as file_with_edges_for_cpp:
-            file_with_edges_for_cpp.write(graph_data)
+        # TODO: uncomment after tests | graph generator for cpp
+        # graph_data = graph_data.replace(" -- ", ',').replace("\n", ',')
+        # with open('graph_cpp_data.txt', 'w') as file_with_edges_for_cpp:
+        #     file_with_edges_for_cpp.write(graph_data)
 
 
 class Vertex:
+    COLORS = ["red", "blue", "green", "yellow"]
+
     def __init__(self, vertex_num):
         self.number_of_edges = 0
         self.vertex_num = vertex_num
+        self.vertex_color = random.choice(self.COLORS)
+        self.connected_verticies = []
 
     def __str__(self):
         return f"vertex_{self.vertex_num}"
@@ -92,9 +104,8 @@ class Vertex:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-vn", "--vertex_number", default=15, help="Vertex number in graph")
+    parser.add_argument("-vn", "--vertex_number", default=5, help="Vertex number in graph")
     args = parser.parse_args()
+
     graph = RandomGraph(int(args.vertex_number))
     graph.send_parameters_to_file()
-
-
