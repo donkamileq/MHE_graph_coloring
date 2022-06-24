@@ -7,6 +7,8 @@ import random
 class RandomGraphException(Exception):
     pass
 
+COLORS = ["red", "blue", "green", "yellow"]
+
 
 class RandomGraph:
     def __init__(self, numbers_of_vertex):
@@ -15,6 +17,7 @@ class RandomGraph:
         self.vertices = []
         for num in range(self.numbers_of_vertex):
             self.vertices.append(Vertex(num))
+        self.graph_parameters = self.prepare_graph_parameters()
 
     @staticmethod
     def get_number_of_edges(numbers_of_vertex):
@@ -47,11 +50,11 @@ class RandomGraph:
                     vertex_to_join = random.choice(list(vertex_with_edges))
                 if vertex_to_join not in vertex_with_edges[chosen_main_vertex] \
                         and chosen_main_vertex not in vertex_with_edges[vertex_to_join]:
-                    if len(vertex_with_edges[vertex_to_join]) < 3 and len(vertex_with_edges[chosen_main_vertex]) < 3:
+                    if vertex_to_join.number_of_edges < 3 and chosen_main_vertex.number_of_edges < 3:
                         vertex_with_edges[chosen_main_vertex].append(vertex_to_join)
-                        chosen_main_vertex.connected_verticies.append(vertex_to_join)
-                        # TODO:  if we want to get all verticies in in connected_verticies
-                        # vertex_to_join.connected_verticies.append(chosen_main_vertex)
+                        chosen_main_vertex.connected_vertices.append(vertex_to_join)
+                        # TODO:  if we want to get all vertices in in connected_vertices
+                        # vertex_to_join.connected_vertices.append(chosen_main_vertex)
                         vertex_to_join.number_of_edges = vertex_to_join.number_of_edges + 1
                         chosen_main_vertex.number_of_edges = chosen_main_vertex.number_of_edges + 1
                         self.numbers_of_edges = self.numbers_of_edges - 1
@@ -74,9 +77,8 @@ class RandomGraph:
         return complete_graph_parameters
 
     def send_parameters_to_file(self):
-        raw_graph = self.prepare_graph_parameters()
         graph_data = ""
-        for first_vertex, second_vertex in raw_graph:
+        for first_vertex, second_vertex in self.graph_parameters:
             raw_graph_data = f"{first_vertex.replace('vertex_', '')} -- {second_vertex.replace('vertex_', '')}"
             graph_data = f"{graph_data}\n{raw_graph_data}".strip()
         with open('graph.txt', 'w') as file_with_edges:
@@ -87,15 +89,17 @@ class RandomGraph:
         # with open('graph_cpp_data.txt', 'w') as file_with_edges_for_cpp:
         #     file_with_edges_for_cpp.write(graph_data)
 
+    def change_random_vertices_color(self):
+        for vert in self.vertices:
+            vert.vertex_color = random.choice(COLORS)
+
 
 class Vertex:
-    COLORS = ["red", "blue", "green", "yellow"]
-
     def __init__(self, vertex_num):
         self.number_of_edges = 0
         self.vertex_num = vertex_num
-        self.vertex_color = random.choice(self.COLORS)
-        self.connected_verticies = []
+        self.vertex_color = random.choice(COLORS)
+        self.connected_vertices = []
 
     def __str__(self):
         return f"vertex_{self.vertex_num}"

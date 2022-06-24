@@ -8,8 +8,8 @@ from random_graph_generator import RandomGraph
 # print(f'Result: {result}\n')
 # for x in graph.vertices:
 #     print(f"Vertex: {x} | Color: {x.vertex_color}\nConnected vertices:")
-#     for y in x.connected_verticies:
+#     for y in x.connected_vertices:
 #         print(f"{y} | {y.vertex_color}")
 #     print("\n------")
 
-hill_climbing_random(number_of_iteration=10, num_of_verticies=30)
+hill_climbing_random(number_of_iteration=20, num_of_vertices=10)
