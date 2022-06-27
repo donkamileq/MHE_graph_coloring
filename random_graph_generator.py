@@ -1,6 +1,7 @@
 # Skrypt do tworzenia randomowego grafu
 import argparse
 import collections
+import re
 import random
 
 
@@ -53,7 +54,7 @@ class RandomGraph:
                     if vertex_to_join.number_of_edges < 3 and chosen_main_vertex.number_of_edges < 3:
                         vertex_with_edges[chosen_main_vertex].append(vertex_to_join)
                         chosen_main_vertex.connected_vertices.append(vertex_to_join)
-                        # TODO:  if we want to get all vertices in in connected_vertices
+                        # TODO:  if we want to get all vertices in the connected_vertices
                         # vertex_to_join.connected_vertices.append(chosen_main_vertex)
                         vertex_to_join.number_of_edges = vertex_to_join.number_of_edges + 1
                         chosen_main_vertex.number_of_edges = chosen_main_vertex.number_of_edges + 1
@@ -76,13 +77,23 @@ class RandomGraph:
             complete_graph_parameters.append(pair_of_vertices)
         return complete_graph_parameters
 
-    def send_parameters_to_file(self):
+    def send_parameters_to_file(self, file_name):
         graph_data = ""
+        vertex_desc = ""
         for first_vertex, second_vertex in self.graph_parameters:
             raw_graph_data = f"{first_vertex.replace('vertex_', '')} -- {second_vertex.replace('vertex_', '')}"
             graph_data = f"{graph_data}\n{raw_graph_data}".strip()
-        with open('graph.txt', 'w') as file_with_edges:
+
+        for vert in self.vertices:
+            raw_vertex_desc = f"{vert.vertex_num}[color=\"{vert.vertex_color}\"]"
+            vertex_desc = f"{vertex_desc}\n{raw_vertex_desc}".strip()
+
+        with open(file_name, 'w') as file_with_edges:
+            file_with_edges.write("graph G {\n")
+            file_with_edges.write(vertex_desc)
+            file_with_edges.write("\n")
             file_with_edges.write(graph_data)
+            file_with_edges.write("\n}")
 
         # TODO: uncomment after tests | graph generator for cpp
         # graph_data = graph_data.replace(" -- ", ',').replace("\n", ',')
@@ -92,6 +103,16 @@ class RandomGraph:
     def change_random_vertices_color(self):
         for vert in self.vertices:
             vert.vertex_color = random.choice(COLORS)
+
+    def change_random_bad_vertices_color(self):
+        for main_vert in self.vertices:
+            for connected_vert in main_vert.connected_vertices:
+                if main_vert.vertex_color == connected_vert.vertex_color:
+                    new_color = random.choice(COLORS)
+                    while new_color == connected_vert.vertex_color and new_color == main_vert.vertex_color:
+                        new_color = random.choice(COLORS)
+                    main_vert.vertex_color = new_color
+                    break
 
 
 class Vertex:

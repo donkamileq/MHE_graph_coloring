@@ -26,17 +26,14 @@ def goal_function(graph: RandomGraph):
     return number_of_colors, number_of_bad_edges
 
 
-def evaluation_of_the_result(problem, solution, problem_graph, solution_graph):
+def evaluation_of_the_result(problem, solution):
     if solution[0] < problem[0] and solution[1] < problem[1]:
         better_result = solution
-        better_graph = solution_graph
     elif solution[1] < problem[1]:
         better_result = solution
-        better_graph = solution_graph
     else:
         better_result = problem
-        better_graph = problem_graph
-    return better_result, better_graph
+    return better_result
 
 
 # TODO: Temp function to see graph
@@ -47,4 +44,3 @@ def check_graph(graph: RandomGraph):
         for y in x.connected_vertices:
             print(f"{y} | {y.vertex_color}")
         print("\n------")
-
