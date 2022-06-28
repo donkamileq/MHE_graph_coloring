@@ -1,12 +1,14 @@
 # Skrypt do tworzenia randomowego grafu
 import argparse
 import collections
+import copy
 import re
 import random
 
 
 class RandomGraphException(Exception):
     pass
+
 
 COLORS = ["red", "blue", "green", "yellow"]
 
@@ -30,9 +32,9 @@ class RandomGraph:
             return 3
         elif numbers_of_vertex > 3:
             if numbers_of_vertex % 2 == 0:
-                return int((3*numbers_of_vertex)/2)
+                return int((3 * numbers_of_vertex) / 2)
             elif numbers_of_vertex % 2 == 1:
-                return int((3*numbers_of_vertex-1)/2)
+                return int((3 * numbers_of_vertex - 1) / 2)
         else:
             raise RandomGraphException(f'Unable to define number of edges, '
                                        f'number of vertices passed: {numbers_of_vertex}')
@@ -76,6 +78,15 @@ class RandomGraph:
                 pair_of_vertices.append(vertex.__str__())
             complete_graph_parameters.append(pair_of_vertices)
         return complete_graph_parameters
+
+    def prepare_graph_description(self):
+        graph_description = collections.defaultdict()
+        for vert in self.vertices:
+            graph_description.setdefault(f"{vert} | {vert.vertex_color}", [])
+        for vert in self.vertices:
+            for conn_vert in vert.connected_vertices:
+                graph_description[f"{vert} | {vert.vertex_color}"].append(f"{conn_vert} | {conn_vert.vertex_color}")
+        return graph_description
 
     def send_parameters_to_file(self, file_name):
         graph_data = ""

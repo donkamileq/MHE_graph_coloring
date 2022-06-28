@@ -1,6 +1,6 @@
 import copy
 
-from evaluation_functions import goal_function, evaluation_of_the_result, check_graph
+from evaluation_functions import goal_function, evaluation_of_the_result
 from random_graph_generator import RandomGraph
 
 

@@ -1,19 +1,14 @@
 from algorithms.hill_climbing import hill_climbing_random, hill_climbing_best
-from algorithms.tabu_search import tabu_search
+from algorithms.tabu_search import tabu_search, tabu_search_with_step_back
 from evaluation_functions import goal_function, check_graph
 from random_graph_generator import RandomGraph
 
-graph = RandomGraph(numbers_of_vertex=50)
-graph.send_parameters_to_file(file_name="graph.txt")
-# result = goal_function(graph)
-# # print(f'Result: {result}\n')
-# # for x in graph.vertices:
-# #     print(f"Vertex: {x} | Color: {x.vertex_color}\nConnected vertices:")
-# #     for y in x.connected_vertices:
-# #         print(f"{y} | {y.vertex_color}")
-# #     print("\n------")
+# graph = RandomGraph(numbers_of_vertex=20)
+# graph.send_parameters_to_file(file_name="graph.txt")
+
+# tabu_search(number_of_iteration=10,
+#             num_of_vertices=200)
 
 
-tabu_search(number_of_iteration=50,
-            num_of_vertices=50,
-            tabu_size=5)
+tabu_search_with_step_back(number_of_iteration=20,
+                           num_of_vertices=10)

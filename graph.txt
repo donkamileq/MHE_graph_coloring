@@ -1,9 +1,43 @@
-0 -- 7
-3 -- 5
-3 -- 0
-4 -- 9
-4 -- 8
-7 -- 2
+graph G {
+0[color="yellow"]
+1[color="yellow"]
+2[color="red"]
+3[color="blue"]
+4[color="green"]
+5[color="yellow"]
+6[color="yellow"]
+7[color="red"]
+8[color="yellow"]
+9[color="red"]
+10[color="blue"]
+11[color="blue"]
+12[color="red"]
+13[color="red"]
+14[color="red"]
+15[color="blue"]
+16[color="red"]
+17[color="blue"]
+18[color="yellow"]
+19[color="yellow"]
+0 -- 13
+1 -- 3
+4 -- 0
+5 -- 6
+5 -- 7
+8 -- 6
 8 -- 3
-9 -- 5
-9 -- 0
+9 -- 17
+9 -- 8
+10 -- 16
+10 -- 11
+11 -- 6
+11 -- 9
+13 -- 19
+13 -- 4
+14 -- 0
+14 -- 3
+15 -- 4
+15 -- 7
+17 -- 7
+19 -- 16
+}
