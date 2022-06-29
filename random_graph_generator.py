@@ -17,6 +17,7 @@ class RandomGraph:
     def __init__(self, numbers_of_vertex):
         self.numbers_of_vertex = numbers_of_vertex
         self.numbers_of_edges = self.get_number_of_edges(numbers_of_vertex)
+        self.numbers_of_edges_ = copy.deepcopy(self.numbers_of_edges)
         self.vertices = []
         for num in range(self.numbers_of_vertex):
             self.vertices.append(Vertex(num))

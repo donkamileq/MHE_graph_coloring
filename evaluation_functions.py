@@ -26,6 +26,13 @@ def goal_function(graph: RandomGraph):
     return number_of_colors, number_of_bad_edges
 
 
+def get_score(graph: RandomGraph):
+    result = goal_function(graph)
+    good_edges = graph.numbers_of_edges_ - result[1]
+    score = ((good_edges/result[0])/graph.numbers_of_edges_)*100
+    return round(score, 2)
+
+
 def evaluation_of_the_result(problem, solution):
     if solution[0] < problem[0] and solution[1] < problem[1]:
         better_result = solution
