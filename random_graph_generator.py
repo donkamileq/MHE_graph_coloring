@@ -22,6 +22,7 @@ class RandomGraph:
         for num in range(self.numbers_of_vertex):
             self.vertices.append(Vertex(num))
         self.graph_parameters = self.prepare_graph_parameters()
+        self.vertex_colors = [x.vertex_color for x in self.vertices]
 
     @staticmethod
     def get_number_of_edges(numbers_of_vertex):
@@ -115,6 +116,10 @@ class RandomGraph:
     def change_random_vertices_color(self):
         for vert in self.vertices:
             vert.vertex_color = random.choice(COLORS)
+        self.update_vertices_colors()
+
+    def update_vertices_colors(self):
+        self.vertex_colors = [x.vertex_color for x in self.vertices]
 
     def change_random_bad_vertices_color(self):
         for main_vert in self.vertices:
