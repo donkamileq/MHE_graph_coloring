@@ -6,10 +6,10 @@ In graph theory, graph coloring is a special case of graph labeling; it is an as
 - [x] Hill climbing algorithm
 - [x] Tabu search
 - [x] Simulated annealing
-- [ ] Genetic algorithm
+- [X] Genetic algorithm
 - [ ] Genetic algorithm - parallel version
 - [ ] Genetic algorithm - island version
-- [ ] Genetic programming - example
+- [X] Genetic programming - example
 - [ ] Evolution strategy
 
 
