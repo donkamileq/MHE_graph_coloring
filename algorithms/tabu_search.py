@@ -1,20 +1,17 @@
 import copy
 import itertools
 
-from evaluation_functions import goal_function, evaluation_of_the_result
-from random_graph_generator import RandomGraph
+from graph.evaluation_functions import goal_function, evaluation_of_the_result, make_figure_for_results, get_score
 
 
-def tabu_search(number_of_iteration, num_of_vertices, number_of_neighbors=5):
+def tabu_search(start_graph, number_of_iteration, number_of_neighbors=5):
     tabu_list = {}
-    start_graph = RandomGraph(numbers_of_vertex=num_of_vertices)
-    start_graph.send_parameters_to_file(file_name='first_graph.txt')
     best_graph = copy.deepcopy(start_graph)
     best_result = goal_function(start_graph)
+    iteration = 0
+    results = []
 
-    print(f"Start results: {best_result}\n")
-
-    for _ in range(number_of_iteration):
+    for it in range(number_of_iteration):
         neighbors_scores = {}
 
         for _ in range(number_of_neighbors):
@@ -23,6 +20,7 @@ def tabu_search(number_of_iteration, num_of_vertices, number_of_neighbors=5):
             neighbors_scores.update({random_neighbor: goal_function(random_neighbor)})
 
         best_neighbor_graph, best_neighbor_score = get_best_score_from_neighbors(neighbors_scores)
+        results.append(get_score(best_neighbor_graph))
 
         if best_neighbor_score not in tabu_list.values():
             tabu_desc = get_description_of_tabu_list(tabu_list)
@@ -30,27 +28,36 @@ def tabu_search(number_of_iteration, num_of_vertices, number_of_neighbors=5):
                 if evaluation_of_the_result(best_result, best_neighbor_score) != best_result:
                     best_result = best_neighbor_score
                     best_graph = copy.deepcopy(best_neighbor_graph)
+                    best_graph.update_vertices_colors()
+                if len(tabu_list) == 10:
+                    tabu_list.pop(0)
                 tabu_list.update({best_graph: best_result})
 
-    best_graph.send_parameters_to_file(file_name="best_graph.txt")
+        iteration = it
+        if best_result[1] == 0:
+            break
+
+    best_graph.update_vertices_colors()
+    best_graph.send_parameters_to_file(file_name="graph_representation/best_graph_tabu_search.txt")
     print(f"Tabu list: {tabu_list}")
     print(f"Best result: {best_result}")
+    print(f"Best score: {get_score(best_graph)}")
+    print(f"Number of iteration: {iteration + 1}")
+    make_figure_for_results(results=results, plot_name="tabu_search")
 
 
-def tabu_search_with_step_back(number_of_iteration, num_of_vertices, number_of_neighbors=5):
+def tabu_search_with_step_back(start_graph, number_of_iteration, number_of_neighbors=5):
     tabu_list = {}
     candidate_list = {}
     try_counter = 0
-    start_graph = RandomGraph(numbers_of_vertex=num_of_vertices)
-    start_graph.send_parameters_to_file(file_name='first_graph.txt')
     best_graph = copy.deepcopy(start_graph)
     best_result = goal_function(start_graph)
     final_graph = copy.deepcopy(start_graph)
     final_result = goal_function(start_graph)
+    iteration = 0
+    results = []
 
-    print(f"Start results: {best_result}\n")
-
-    for _ in range(number_of_iteration):
+    for it in range(number_of_iteration):
         neighbors_scores = {}
 
         for _ in range(number_of_neighbors):
@@ -60,6 +67,7 @@ def tabu_search_with_step_back(number_of_iteration, num_of_vertices, number_of_n
 
         best_neighbor_graph, best_neighbor_score = get_best_score_from_neighbors(neighbors_scores)
         candidate_list.update({best_neighbor_graph: best_neighbor_score})
+        results.append(get_score(best_neighbor_graph))
 
         if best_neighbor_score not in tabu_list.values():
             tabu_desc = get_description_of_tabu_list(tabu_list)
@@ -70,17 +78,31 @@ def tabu_search_with_step_back(number_of_iteration, num_of_vertices, number_of_n
                     if evaluation_of_the_result(best_result, final_result) != final_result:
                         final_result = best_result
                         final_graph = copy.deepcopy(best_graph)
+                        final_graph.update_vertices_colors()
                 else:
                     try_counter = try_counter + 1
                     if try_counter == 3:
                         try_counter = 0
                         best_result = list(candidate_list.values())[-3]
                         best_graph = list(candidate_list.keys())[-3]
+                if len(tabu_list) == 10:
+                    for k in tabu_list.keys():
+                        k_to_remove = k
+                        tabu_list.pop(k_to_remove)
+                        break
                 tabu_list.update({best_graph: best_result})
 
-    final_graph.send_parameters_to_file(file_name="best_graph.txt")
-    print(f"Best result: {final_result}")
+        iteration = it
+        if best_result[1] == 0:
+            break
+
+    final_graph.update_vertices_colors()
+    final_graph.send_parameters_to_file(file_name="graph_representation/best_graph_tabu_search_step_back.txt")
     print(f"Tabu list: {tabu_list}")
+    print(f"Best result: {final_result}")
+    print(f"Best score: {get_score(final_graph)}")
+    print(f"Number of iteration: {iteration + 1}")
+    make_figure_for_results(results=results, plot_name="tabu_search_with_step_back")
 
 
 def get_best_score_from_neighbors(neighbors_scores):

@@ -1,4 +1,6 @@
-from random_graph_generator import RandomGraph
+import matplotlib.pyplot as plt
+
+from graph.random_graph_generator import RandomGraph
 
 
 def get_number_of_colors(graph: RandomGraph):
@@ -21,8 +23,6 @@ def get_bad_edges(graph: RandomGraph):
 def goal_function(graph: RandomGraph):
     number_of_colors = get_number_of_colors(graph)
     number_of_bad_edges = get_bad_edges(graph)
-    # print(f"Number of colors used: {number_of_colors}")
-    # print(f"Number of incorrectly painted vertices: {number_of_bad_edges}")
     return number_of_colors, number_of_bad_edges
 
 
@@ -43,11 +43,17 @@ def evaluation_of_the_result(problem, solution):
     return better_result
 
 
-# TODO: Temp function to see graph
-def check_graph(graph: RandomGraph):
-    print("\nGRAPH\n")
-    for x in graph.vertices:
-        print(f"Vertex: {x} | Color: {x.vertex_color}\nConnected vertices:")
-        for y in x.connected_vertices:
-            print(f"{y} | {y.vertex_color}")
-        print("\n------")
+def make_figure_for_results(results, plot_name):
+    plt.plot(results)
+    plt.title(plot_name)
+    plt.ylabel("Scores")
+    plt.xlabel("Number of result")
+    plt.show()
+
+
+def make_figure_for_time(results, plot_name):
+    plt.bar(range(len(results)), list(results.values()), align='center')
+    plt.xticks(range(len(results)), list(results.keys()))
+    plt.title(plot_name)
+    plt.show()
+

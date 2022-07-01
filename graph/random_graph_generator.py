@@ -1,8 +1,5 @@
-# Skrypt do tworzenia randomowego grafu
-import argparse
 import collections
 import copy
-import re
 import random
 
 
@@ -108,11 +105,6 @@ class RandomGraph:
             file_with_edges.write(graph_data)
             file_with_edges.write("\n}")
 
-        # TODO: uncomment after tests | graph generator for cpp
-        # graph_data = graph_data.replace(" -- ", ',').replace("\n", ',')
-        # with open('graph_cpp_data.txt', 'w') as file_with_edges_for_cpp:
-        #     file_with_edges_for_cpp.write(graph_data)
-
     def change_random_vertices_color(self):
         for vert in self.vertices:
             vert.vertex_color = random.choice(COLORS)
@@ -141,12 +133,3 @@ class Vertex:
 
     def __str__(self):
         return f"vertex_{self.vertex_num}"
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-vn", "--vertex_number", default=5, help="Vertex number in graph")
-    args = parser.parse_args()
-
-    graph = RandomGraph(int(args.vertex_number))
-    graph.send_parameters_to_file()

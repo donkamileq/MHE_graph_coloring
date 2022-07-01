@@ -2,25 +2,27 @@ import copy
 import math
 import random
 
-from evaluation_functions import get_score, goal_function
-from random_graph_generator import RandomGraph, COLORS
+from graph.evaluation_functions import get_score, goal_function, make_figure_for_results
+from graph.random_graph_generator import RandomGraph, COLORS
 
 
-def genetic_algorithm(num_of_vertices, population_size, crossover_single=False, crossover_double=False,
-                      mutation_ten=False, mutation_half=False):
-    start_graph = RandomGraph(numbers_of_vertex=num_of_vertices)
-    start_graph.send_parameters_to_file(file_name="first_graph.txt")
+def genetic_algorithm(start_graph, population_size, crossover_single=False, crossover_double=False,
+                      random_mutation=False, good_mutation=False):
     population = []
     crossover_probability = 0.9
     mutation_probability = 0.1
     num_of_generation = 0
+    results = []
+
     for _ in range(population_size):
         random_graph = copy.deepcopy(start_graph)
         random_graph.change_random_vertices_color()
         population.append(random_graph)
 
     population_fitness = calculate_population_fitness(population)
-    print(f"First population fitness: {population_fitness}")
+    results.append(sum(population_fitness))
+    print(f"Best result: {max(population_fitness)}")
+    print(f"First population fitness: {population_fitness}\n")
     while num_of_generation < 100:
         parents = []
         offspring = []
@@ -37,17 +39,35 @@ def genetic_algorithm(num_of_vertices, population_size, crossover_single=False, 
             offspring.append(child_2)
 
         for child in offspring:
-            if mutation_ten:
-                mutation_ten_percent(child, mutation_probability)
-            elif mutation_half:
-                mutation_half_individual(child, mutation_probability)
+            if random_mutation:
+                random_mutation_ten_percent(child, mutation_probability)
+            elif good_mutation:
+                good_mutation_ten_percent(child, mutation_probability)
 
         population = offspring
         num_of_generation += 1
+        results.append(sum(calculate_population_fitness(population)))
 
     population_fitness = calculate_population_fitness(population)
+    results.append(sum(population_fitness))
     print(f"Best result: {max(population_fitness)}")
-    population[population_fitness.index(max(population_fitness))].send_parameters_to_file(file_name="best_graph.txt")
+    if crossover_single and random_mutation:
+        population[population_fitness.index(max(population_fitness))].send_parameters_to_file(
+            file_name="graph_representation/best_graph_single_random.txt")
+        make_figure_for_results(results=results, plot_name="genetic_algorithm_single_random")
+    elif crossover_single and good_mutation:
+        population[population_fitness.index(max(population_fitness))].send_parameters_to_file(
+            file_name="graph_representation/best_graph_single_good.txt")
+        make_figure_for_results(results=results, plot_name="genetic_algorithm_single_good")
+
+    elif crossover_double and random_mutation:
+        population[population_fitness.index(max(population_fitness))].send_parameters_to_file(
+            file_name="graph_representation/best_graph_double_random.txt")
+        make_figure_for_results(results=results, plot_name="genetic_algorithm_double_random")
+    elif crossover_double and good_mutation:
+        population[population_fitness.index(max(population_fitness))].send_parameters_to_file(
+            file_name="graph_representation/best_graph_double_good.txt")
+        make_figure_for_results(results=results, plot_name="genetic_algorithm_double_good")
     print(f"Final population fitness: {population_fitness}")
 
 
@@ -59,7 +79,7 @@ def tournament_selection(population):
     return individual_1 if goal_function(individual_1) > goal_function(individual_2) else individual_2
 
 
-def mutation_ten_percent(graph: RandomGraph, mutation_probability):
+def random_mutation_ten_percent(graph: RandomGraph, mutation_probability):
     u = random.random()
     if u < mutation_probability:
         number_of_mutation = math.ceil(graph.numbers_of_vertex/10)
@@ -70,13 +90,28 @@ def mutation_ten_percent(graph: RandomGraph, mutation_probability):
     return graph
 
 
-def mutation_half_individual(graph: RandomGraph, mutation_probability):
+def good_mutation_ten_percent(graph: RandomGraph, mutation_probability):
     u = random.random()
     if u < mutation_probability:
-        number_of_mutation = math.ceil(graph.numbers_of_vertex/2)
-        vertices = list(graph.vertices.keys())
+        number_of_mutation = math.ceil(graph.numbers_of_vertex/10)
+
         for _ in range(number_of_mutation):
-            random.choice(vertices).vertex_color = random.choice(COLORS)
+            vertices = list(graph.vertices.keys())
+            chosen_vert = random.choice(vertices)
+            connected_vert_colors = [x.vertex_color for x in chosen_vert.connected_vertices]
+
+            while chosen_vert.vertex_color not in connected_vert_colors:
+                vertices = list(graph.vertices.keys())
+                chosen_vert = random.choice(vertices)
+                connected_vert_colors = [x.vertex_color for x in chosen_vert.connected_vertices]
+
+            if len(connected_vert_colors) >= 1 and chosen_vert.vertex_color in connected_vert_colors:
+                new_color = random.choice(COLORS)
+                while new_color in connected_vert_colors and new_color == chosen_vert.vertex_color:
+                    new_color = random.choice(COLORS)
+                chosen_vert.vertex_color = new_color
+                graph.update_vertices_colors()
+
         graph.update_vertices_colors()
     return graph
 
