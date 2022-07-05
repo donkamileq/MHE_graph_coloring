@@ -46,10 +46,12 @@ def hill_climbing_best(start_graph, number_of_iteration):
         random_result = goal_function(random_graph)
         results.append(get_score(random_graph))
 
-        if evaluation_of_the_result(best_result, random_result):
+        if evaluation_of_the_result(best_result, random_result) != best_result:
             best_graph = copy.deepcopy(random_graph)
             best_graph.update_vertices_colors()
             best_result = random_result
+
+        random_graph = copy.deepcopy(best_graph)
 
         iteration = _
         if best_result[1] == 0:

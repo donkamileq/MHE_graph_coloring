@@ -4,22 +4,24 @@ import itertools
 from graph.evaluation_functions import goal_function, evaluation_of_the_result, make_figure_for_results, get_score
 
 
-def tabu_search(start_graph, number_of_iteration, number_of_neighbors=5):
+def tabu_search(start_graph, number_of_iteration):
     tabu_list = {}
     best_graph = copy.deepcopy(start_graph)
     best_result = goal_function(start_graph)
+    temp_graph = copy.deepcopy(start_graph)
     iteration = 0
     results = []
 
     for it in range(number_of_iteration):
         neighbors_scores = {}
 
-        for _ in range(number_of_neighbors):
-            random_neighbor = copy.deepcopy(best_graph)
-            random_neighbor.change_random_vertices_color()
+        for _ in range(best_graph.numbers_of_vertex * len(set(best_graph.vertex_colors))):
+            random_neighbor = copy.deepcopy(temp_graph)
+            random_neighbor.change_random_one_vertex_color()
             neighbors_scores.update({random_neighbor: goal_function(random_neighbor)})
 
         best_neighbor_graph, best_neighbor_score = get_best_score_from_neighbors(neighbors_scores)
+        temp_graph = copy.deepcopy(best_neighbor_graph)
         results.append(get_score(best_neighbor_graph))
 
         if best_neighbor_score not in tabu_list.values():
@@ -30,7 +32,10 @@ def tabu_search(start_graph, number_of_iteration, number_of_neighbors=5):
                     best_graph = copy.deepcopy(best_neighbor_graph)
                     best_graph.update_vertices_colors()
                 if len(tabu_list) == 10:
-                    tabu_list.pop(0)
+                    for k in tabu_list.keys():
+                        k_to_remove = k
+                        tabu_list.pop(k_to_remove)
+                        break
                 tabu_list.update({best_graph: best_result})
 
         iteration = it
@@ -52,6 +57,7 @@ def tabu_search_with_step_back(start_graph, number_of_iteration, number_of_neigh
     try_counter = 0
     best_graph = copy.deepcopy(start_graph)
     best_result = goal_function(start_graph)
+    temp_graph = copy.deepcopy(start_graph)
     final_graph = copy.deepcopy(start_graph)
     final_result = goal_function(start_graph)
     iteration = 0
@@ -60,12 +66,13 @@ def tabu_search_with_step_back(start_graph, number_of_iteration, number_of_neigh
     for it in range(number_of_iteration):
         neighbors_scores = {}
 
-        for _ in range(number_of_neighbors):
-            random_neighbor = copy.deepcopy(best_graph)
-            random_neighbor.change_random_vertices_color()
+        for _ in range(best_graph.numbers_of_vertex * len(set(best_graph.vertex_colors))):
+            random_neighbor = copy.deepcopy(temp_graph)
+            random_neighbor.change_random_one_vertex_color()
             neighbors_scores.update({random_neighbor: goal_function(random_neighbor)})
 
         best_neighbor_graph, best_neighbor_score = get_best_score_from_neighbors(neighbors_scores)
+        temp_graph = copy.deepcopy(best_neighbor_graph)
         candidate_list.update({best_neighbor_graph: best_neighbor_score})
         results.append(get_score(best_neighbor_graph))
 

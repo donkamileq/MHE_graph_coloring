@@ -9,7 +9,7 @@ from graph.random_graph_generator import RandomGraph, COLORS
 def genetic_algorithm(start_graph, population_size, crossover_single=False, crossover_double=False,
                       random_mutation=False, good_mutation=False):
     population = []
-    crossover_probability = 0.9
+    crossover_probability = 0.1
     mutation_probability = 0.1
     num_of_generation = 0
     results = []
@@ -72,11 +72,11 @@ def genetic_algorithm(start_graph, population_size, crossover_single=False, cros
 
 
 def tournament_selection(population):
-    individual_1 = random.choice(population)
-    individual_2 = random.choice(population)
+    individual_1 = copy.deepcopy(random.choice(population))
+    individual_2 = copy.deepcopy(random.choice(population))
     while individual_1 == individual_2:
-        individual_2 = random.choice(population)
-    return individual_1 if goal_function(individual_1) > goal_function(individual_2) else individual_2
+        individual_2 = copy.deepcopy(random.choice(population))
+    return individual_1 if get_score(individual_1) > get_score(individual_2) else individual_2
 
 
 def random_mutation_ten_percent(graph: RandomGraph, mutation_probability):
@@ -121,7 +121,7 @@ def crossover_single_point(parent_1: RandomGraph, parent_2: RandomGraph, crossov
     if u < crossover_probability:
         child_1 = copy.deepcopy(parent_1)
         child_2 = copy.deepcopy(parent_1)
-        crossover_pt = int(len(parent_1.vertices)/2)
+        crossover_pt = random.randint(0, int(len(parent_1.vertices)))
 
         child_1_vertices = list(child_1.vertices.keys())
         child_2_vertices = list(child_2.vertices.keys())

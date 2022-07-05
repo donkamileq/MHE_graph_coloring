@@ -110,6 +110,11 @@ class RandomGraph:
             vert.vertex_color = random.choice(COLORS)
         self.update_vertices_colors()
 
+    def change_random_one_vertex_color(self):
+        vert = random.choice(list(self.vertices.keys()))
+        vert.vertex_color = random.choice(COLORS)
+        self.update_vertices_colors()
+
     def update_vertices_colors(self):
         self.vertex_colors = [x.vertex_color for x in self.vertices]
 
